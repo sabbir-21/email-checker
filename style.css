@@ -105,7 +105,7 @@
 }
 
 .email-text {
-    max-width: 220px; /* adjust to popup width */
+    max-width: 260px; /* adjust to popup width */
     word-break: break-all;   /* the MOST important */
     white-space: normal;
 }

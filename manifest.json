@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Gmail Sender Popup",
+  "version": "1.0",
+  "description": "Shows sender name and email when an email is opened on Gmail.",
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["content.js"],
+      "css": ["style.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

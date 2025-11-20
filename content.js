@@ -18,7 +18,7 @@ function updateSenderInfo() {
 
     if (!nameEl || !email) return;
 
-    // NEW: Get Reply-To
+    // Get Reply-To
     const replyToEl = document.querySelector(".gI");
     let replyTo = replyToEl ? replyToEl.getAttribute("email") : "N/A";
 
@@ -34,21 +34,69 @@ function updateSenderInfo() {
     analyzeEmail(name, emailID, replyTo);
 }
 
-function analyzeEmail(name, email, replyTo) {
-    const domain = email.split("@")[1];
-    const warnings = [];
 
+// ===============================
+//        MAIN ANALYSIS
+// ===============================
+async function analyzeEmail(name, email, replyTo) {
+    const domain = email.split("@")[1];
+
+    const warnings = []; // RED
+    const mxLogs = [];   // YELLOW
+
+    // 1. Typo Check
     if (isTypo(domain)) {
         warnings.push("❗ Possible Typo-squatting Domain");
     }
 
+    // 2. Suspicious Pattern
     if (hasPhishingPattern(domain)) {
         warnings.push("❗ Suspicious Subdomain / Phishing Pattern");
     }
 
-    createOrUpdatePopup(name, email, replyTo, warnings);
+    // 3. MX Check
+    const mxResult = await checkMX(domain);
+
+    if (!mxResult.hasMX) {
+        mxLogs.push("❗ No MX Records Found; Domain cannot receive emails.");
+    } else {
+        mxLogs.push(`✔ MX Record Found: ${mxResult.mxRecords[0]}`);
+    }
+
+    createOrUpdatePopup(name, email, replyTo, warnings, mxLogs);
 }
 
+
+
+// ===============================
+//          MX CHECK
+// ===============================
+async function checkMX(domain) {
+    const url = `https://dns.google/resolve?name=${domain}&type=MX`;
+
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!data.Answer) {
+            return { hasMX: false };
+        }
+
+        return {
+            hasMX: true,
+            mxRecords: data.Answer.map(r => r.data)
+        };
+
+    } catch (e) {
+        return { hasMX: false };
+    }
+}
+
+
+
+// ===============================
+//       TYPO DETECTION
+// ===============================
 function isTypo(domain) {
     const checks = ["rn", "vv", "0", "1", "lll", "-", "–"];
     const lower = domain.toLowerCase();
@@ -59,6 +107,11 @@ function isTypo(domain) {
     return false;
 }
 
+
+
+// ===============================
+//     HEURISTIC PHISHING CHECK
+// ===============================
 function hasPhishingPattern(domain) {
     return (
         domain.split(".").length > 4 ||
@@ -69,7 +122,12 @@ function hasPhishingPattern(domain) {
     );
 }
 
-function createOrUpdatePopup(name, email, replyTo, warnings) {
+
+
+// ===============================
+//       POPUP GENERATION
+// ===============================
+function createOrUpdatePopup(name, email, replyTo, warnings, mxLogs) {
     let box = document.getElementById("sender-popup-box");
 
     if (popupClosed) return;
@@ -82,26 +140,49 @@ function createOrUpdatePopup(name, email, replyTo, warnings) {
         makeDraggable(box);
     }
 
+    // Red warnings
+    const redSection = warnings.length
+        ? `<div class="warning-section">${warnings.join("<br>")}</div>`
+        : "";
+
+    // SHOW SAFE ONLY IF NOTHING BAD
+    const noWarnings = warnings.length === 0;
+    const mxIsClean = mxLogs.every(log => !log.includes("❗"));
+
+    const greenSection = (noWarnings && mxIsClean)
+        ? `<div class="safe-section">✔ No major warnings detected</div>`
+        : "";
+    
+    // Yellow MX logs
+    const mxSection = `
+        <div class="mx-section">
+            <b>MX Status:</b><br>
+            ${mxLogs.join("<br>")}
+        </div>
+    `;
+
+
     box.innerHTML = `
         <div class="drag-header">
             <strong>Email Verifier</strong>
             <button id="close-popup">✖</button>
         </div>
+
         <div class="content">
             <div class="info-section">
                 <b>Name:</b> ${name}<br>
+
                 <div class="email-row">
                     <b>Email:</b> <span class="email-text">${email}</span>
                 </div>
-                <b>Reply-To:</b> ${replyTo}<br>
+
+                <b>Reply-To:</b> ${replyTo}<br><br>
             </div>
 
-            ${
-                warnings.length
-                ? `<div class="warning-section">${warnings.join("<br>")}</div>`
-                : `<div class="safe-section">✔ No major warnings detected</div>`
-            }
-
+            ${redSection}
+            ${greenSection}
+            ${mxSection}
+            
             <button id="mismatch-btn" class="action-btn">Find Mismatch</button>
 
             <div id="mismatch-area" class="hidden">
@@ -112,15 +193,18 @@ function createOrUpdatePopup(name, email, replyTo, warnings) {
         </div>
     `;
 
+    // Close button
     document.getElementById("close-popup").onclick = () => {
         box.remove();
         popupClosed = true;
     };
 
+    // Expand mismatch section
     document.getElementById("mismatch-btn").onclick = () => {
         document.getElementById("mismatch-area").classList.toggle("hidden");
     };
 
+    // Mismatch check
     document.getElementById("check-mismatch").onclick = () => {
         const userInput = document.getElementById("original-email").value.trim();
         const resultEl = document.getElementById("mismatch-result");
@@ -129,9 +213,6 @@ function createOrUpdatePopup(name, email, replyTo, warnings) {
             resultEl.innerHTML = "⚠ Please enter a valid email.";
             return;
         }
-
-        //const senderDomain = email.split("@")[1];
-        //const officialDomain = userInput.split("@")[1];
 
         if (email === userInput) {
             resultEl.innerHTML = "✔ E-mail match. Sender is likely legitimate.";
@@ -144,14 +225,16 @@ function createOrUpdatePopup(name, email, replyTo, warnings) {
 }
 
 
-// DRAGGABLE WINDOW
+
+// ===============================
+//       DRAGGABLE POPUP
+// ===============================
 function makeDraggable(element) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
     const headerObserver = new MutationObserver(() => {
         const header = element.querySelector(".drag-header");
         if (!header) return;
-
         header.onmousedown = dragMouseDown;
     });
 

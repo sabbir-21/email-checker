@@ -1,22 +1,30 @@
 .sender-popup {
     position: fixed;
-    top: 40px;
-    right: 40px;
-    width: 230px;
+    top: 90px;
+    right: 60px;
+    width: 350px;
     background: #ffffff;
-    border: 2px solid #4a90e2;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border: 2px solid #3f78e0;
+    border-radius: 12px;
+    padding: 0;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
     z-index: 999999;
-    font-family: Arial, sans-serif;
+    font-family: "Segoe UI", Arial, sans-serif;
+    animation: popIn 0.25s ease-out;
+}
+
+@keyframes popIn {
+    from { transform: scale(0.8); opacity: 0;}
+    to { transform: scale(1); opacity: 1;}
 }
 
 .drag-header {
     cursor: move;
-    background: #4a90e2;
+    background: #3f78e0;
     color: white;
-    padding: 8px;
-    border-radius: 8px 8px 0 0;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 10px 10px 0 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -26,47 +34,78 @@
     border: none;
     background: transparent;
     color: white;
-    font-size: 16px;
+    font-size: 18px;
     cursor: pointer;
 }
 
 .content {
-    padding: 10px;
-    font-size: 14px;
-}
-.sender-popup {
-    position: fixed;
-    top: 40px;
-    right: 40px;
-    width: 230px;
-    background: #ffffff;
-    border: 2px solid #4a90e2;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    z-index: 999999;
-    font-family: Arial, sans-serif;
+    padding: 15px;
 }
 
-.drag-header {
-    cursor: move;
-    background: #4a90e2;
-    color: white;
+.warning-section {
+    background: #fff5f5;
+    border-left: 4px solid #ff4d4d;
     padding: 8px;
-    border-radius: 8px 8px 0 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-#close-popup {
-    border: none;
-    background: transparent;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.content {
-    padding: 10px;
+    border-radius: 5px;
     font-size: 14px;
+}
+
+.safe-section {
+    background: #e9f9ee;           /* light green */
+    border-left: 4px solid #29a745; /* green line */
+    padding: 8px;
+    border-radius: 5px;
+    color: #1d7a32;                /* green text */
+    font-size: 14px;
+}
+
+.action-btn {
+    width: 100%;
+    background: #3f78e0;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.action-btn.small {
+    padding: 6px;
+    margin-top: 8px;
+    font-size: 13px;
+}
+
+.action-btn:hover {
+    background: #2e5fb4;
+}
+
+#original-email {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: 1px solid #bbb;
+}
+
+#mismatch-result {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.hidden {
+    display: none;
+}
+
+.email-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.email-text {
+    max-width: 220px; /* adjust to popup width */
+    word-break: break-all;   /* the MOST important */
+    white-space: normal;
 }

@@ -3,6 +3,9 @@
   "name": "Email Verifier",
   "version": "1.0",
   "description": "Detects phishing, typo-squatting, and checks sender authenticity.",
+  "author": "Sabbir Ahmed",
+  "homepage_url": "https://github.com/sabbir-21",
+  "options_page": "options.html",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",

@@ -93,11 +93,7 @@ function detectAttachments() {
 //                 ATTACHMENT RISK ANALYSIS
 // ============================================================
 function analyzeAttachmentRisks(files) {
-    const highRisk = [
-        ".exe", ".scr", ".js", ".vbs", ".bat", ".cmd", ".com",
-        ".jar", ".msi", ".ps1", ".hta", ".html", ".htm",
-        ".xlsm", ".docm"
-    ];
+    const highRisk = [".exe", ".scr", ".js", ".vbs", ".bat", ".cmd", ".com",".jar", ".msi", ".ps1", ".hta", ".html", ".htm", ".xlsm", ".docm"];
 
     const mediumRisk = [".zip", ".rar", ".7z", ".iso"];
 
@@ -233,6 +229,13 @@ function createOrUpdatePopup(name, email, replyTo, warnings, mxLogs, attachLogs)
                 <button id="check-mismatch" class="action-btn small">Check</button>
                 <div id="mismatch-result"></div>
             </div>
+        </div>
+        <div class="credit-box">
+            <small>
+                Developed by <b>Sabbir Ahmed</b><br>
+                <a href="https://www.facebook.com/sabbir299" target="_blank">Facebook</a> |
+                <a href="https://github.com/sabbir-21" target="_blank">GitHub</a>
+            </small>
         </div>
     `;
 

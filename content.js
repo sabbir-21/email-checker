@@ -1,16 +1,54 @@
 let currentEmail = "";
 let popupClosed = false;
 
-const observer = new MutationObserver(() => {
-    updateSenderInfo();
-});
+// Reset-on-new-email
+let lastURL = location.href;
+let headersExpanded = false;
+
+// Watch for URL changes (Gmail navigation)
+setInterval(() => {
+    if (location.href !== lastURL) {
+        lastURL = location.href;
+
+        // Gmail opened a new email → reset
+        headersExpanded = false;
+        currentEmail = "";
+        popupClosed = false;
+    }
+}, 500);
+
+// Mutation Observer for DOM changes
+const observer = new MutationObserver(updateSenderInfo);
 observer.observe(document.body, { childList: true, subtree: true });
 
 
 // ============================================================
-//                   EMAIL OPENED → RUN CHECKS
+//                EMAIL OPENED → RUN CHECKS
 // ============================================================
 function updateSenderInfo() {
+
+    // STEP 1: Try to expand "header details" once per email
+    if (!headersExpanded) {
+        const arrow = document.querySelector("img.ajz");
+        if (arrow) {
+            arrow.click();
+            headersExpanded = true;
+        } else {
+            // Gmail loads arrow slightly late → retry briefly
+            return;
+        }
+    }
+
+    // STEP 2: Wait for Gmail to inject hidden rows (reply-to)
+    setTimeout(extractData, 200);
+}
+
+
+// ============================================================
+//               EXTRACT NAME / EMAIL / REPLY-TO
+// ============================================================
+function extractData() {
+
     const nameEl = document.querySelector(".gD");
     let email = nameEl?.getAttribute("email");
 
@@ -20,11 +58,15 @@ function updateSenderInfo() {
     }
     if (!nameEl || !email) return;
 
-    const replyToEl = document.querySelector(".gI");
-    let replyTo = replyToEl ? replyToEl.getAttribute("email") : "N/A";
+    // One-liner reply-to extraction
+    const replyTo = [...document.querySelectorAll("tr.ajv")]
+        .find(r => r.querySelector(".gG .gI")?.textContent.trim() === "reply-to:")
+        ?.querySelector(".gL [email]")
+        ?.getAttribute("email") || "";
 
     const name = nameEl.innerText;
     const emailID = email;
+    const replytoEmailID = replyTo;
     const uniqueKey = name + emailID;
 
     if (uniqueKey === currentEmail) return;
@@ -32,7 +74,7 @@ function updateSenderInfo() {
     currentEmail = uniqueKey;
     popupClosed = false;
 
-    analyzeEmail(name, emailID, replyTo);
+    analyzeEmail(name, emailID, replytoEmailID);
 }
 
 
@@ -43,22 +85,18 @@ function updateSenderInfo() {
 async function analyzeEmail(name, email, replyTo) {
     const domain = email.split("@")[1];
 
-    const warnings = []; // Red section
-    const mxLogs = [];  // Yellow section
-    const attachLogs = []; // Attachment warnings (Red)
+    const warnings = [];
+    const mxLogs = [];
+    const attachLogs = [];
 
-    // 1. Typo Check
     if (isTypo(domain)) warnings.push("❗ Possible Typo-squatting Domain");
 
-    // 2. Suspicious Pattern
     if (hasPhishingPattern(domain)) warnings.push("❗ Suspicious Subdomain / Phishing Pattern");
 
-    // 3. MX Check
     const mxResult = await checkMX(domain);
     if (!mxResult.hasMX) mxLogs.push("❗ No MX Records Found; Domain cannot receive emails.");
     else mxLogs.push(`✔ MX Record Found: ${mxResult.mxRecords[0]}`);
 
-    // 4. ATTACHMENT CHECK (NEW)
     const attachments = detectAttachments();
     if (attachments.length > 0) {
         const risks = analyzeAttachmentRisks(attachments);
@@ -74,7 +112,6 @@ async function analyzeEmail(name, email, replyTo) {
 //                   ATTACHMENT DETECTION
 // ============================================================
 function detectAttachments() {
-    // Gmail attachment selector
     const nodes = document.querySelectorAll("div.aQH span.aZo, div.aQH .aV3");
 
     const files = [];
@@ -93,8 +130,7 @@ function detectAttachments() {
 //                 ATTACHMENT RISK ANALYSIS
 // ============================================================
 function analyzeAttachmentRisks(files) {
-    const highRisk = [".exe", ".scr", ".js", ".vbs", ".bat", ".cmd", ".com",".jar", ".msi", ".ps1", ".hta", ".html", ".htm", ".xlsm", ".docm"];
-
+    const highRisk = [".exe", ".scr", ".js", ".vbs", ".bat", ".cmd", ".com", ".jar", ".msi", ".ps1", ".hta", ".html", ".htm", ".xlsm", ".docm"];
     const mediumRisk = [".zip", ".rar", ".7z", ".iso"];
 
     const logs = [];
@@ -106,8 +142,6 @@ function analyzeAttachmentRisks(files) {
             logs.push(`❗ Dangerous attachment detected: <b>${file}</b>`);
         } else if (mediumRisk.includes(ext)) {
             logs.push(`⚠ Suspicious compressed file: <b>${file}</b>`);
-        } else {
-            // safe → no message needed
         }
     });
 
@@ -180,7 +214,6 @@ function createOrUpdatePopup(name, email, replyTo, warnings, mxLogs, attachLogs)
         makeDraggable(box);
     }
 
-    // Red: typographic & phishing + dangerous attachments
     const redIssues = [...warnings, ...attachLogs];
 
     const redSection = redIssues.length
@@ -207,7 +240,6 @@ function createOrUpdatePopup(name, email, replyTo, warnings, mxLogs, attachLogs)
         </div>
 
         <div class="content">
-
             <div class="info-section">
                 <b>Name:</b> ${name}<br>
 
@@ -230,6 +262,7 @@ function createOrUpdatePopup(name, email, replyTo, warnings, mxLogs, attachLogs)
                 <div id="mismatch-result"></div>
             </div>
         </div>
+
         <div class="credit-box">
             <small>
                 Developed by <b>Sabbir Ahmed</b><br>
@@ -239,18 +272,15 @@ function createOrUpdatePopup(name, email, replyTo, warnings, mxLogs, attachLogs)
         </div>
     `;
 
-    // Close button
     document.getElementById("close-popup").onclick = () => {
         box.remove();
         popupClosed = true;
     };
 
-    // Mismatch toggle
     document.getElementById("mismatch-btn").onclick = () => {
         document.getElementById("mismatch-area").classList.toggle("hidden");
     };
 
-    // Mismatch check
     document.getElementById("check-mismatch").onclick = () => {
         const userInput = document.getElementById("original-email").value.trim();
         const resultEl = document.getElementById("mismatch-result");

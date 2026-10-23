@@ -1,6 +1,7 @@
 # Email Verifier Chrome Extension
 
 A Google Chrome Extension that checks sender authenticity, detects phishing patterns, analyzes attachment risks, and validates MX records directly within Gmail.
+Install from [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/email-verifier/oeafohigknnpndclaoinldhkheikglkc)
 
 ## Features
 

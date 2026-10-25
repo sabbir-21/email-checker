@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Verifier - Safe Senders Database & Settings</title>
+  <title>Email Verifier - Safe Senders & Security Settings</title>
   <style>
     :root {
       --primary: #3f78e0;
       --primary-hover: #2e5fb4;
       --success: #28a745;
       --danger: #dc3545;
+      --warning: #f59e0b;
       --bg: #f8fafc;
       --card-bg: #ffffff;
       --text: #1e293b;
@@ -33,21 +34,27 @@
     }
 
     .container {
-      max-width: 760px;
+      max-width: 820px;
       margin: 0 auto;
     }
 
     header {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 24px;
+      justify-content: space-between;
+      margin-bottom: 20px;
       padding-bottom: 16px;
       border-bottom: 1px solid var(--border);
     }
 
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
     .header-icon {
-      font-size: 32px;
+      font-size: 34px;
     }
 
     h1 {
@@ -59,6 +66,46 @@
     .subtitle {
       color: var(--muted);
       font-size: 14px;
+    }
+
+    /* Tabs Navigation */
+    .tabs-nav {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
     }
 
     .card {
@@ -92,10 +139,10 @@
       display: flex;
       gap: 10px;
       margin-bottom: 10px;
+      flex-wrap: wrap;
     }
 
-    input[type="text"] {
-      flex: 1;
+    input[type="text"], input[type="file"], select, textarea {
       padding: 10px 14px;
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -104,9 +151,14 @@
       transition: border-color 0.15s;
     }
 
-    input[type="text"]:focus {
+    input[type="text"]:focus, select:focus, textarea:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(63, 120, 224, 0.15);
+    }
+
+    .input-flex {
+      flex: 1;
+      min-width: 220px;
     }
 
     button {
@@ -156,8 +208,8 @@
     }
 
     .btn-small {
-      padding: 4px 8px;
-      font-size: 12px;
+      padding: 5px 10px;
+      font-size: 12.5px;
     }
 
     .feedback-msg {
@@ -174,19 +226,42 @@
       display: block;
     }
 
-    .search-bar {
+    .search-row {
+      display: flex;
+      gap: 10px;
       margin-bottom: 12px;
     }
 
     .list-actions {
       display: flex;
-      justify-content: flex-end;
-      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 12px;
     }
 
+    .filter-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .filter-btn {
+      padding: 4px 10px;
+      font-size: 12px;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .filter-btn.active {
+      background: #e0e7ff;
+      color: #3730a3;
+      font-weight: 600;
+      border-color: #c7d2fe;
+    }
+
     .senders-list {
-      max-height: 380px;
+      max-height: 400px;
       overflow-y: auto;
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -212,8 +287,14 @@
 
     .sender-info {
       display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sender-header-line {
+      display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .sender-type-tag {
@@ -235,10 +316,21 @@
       color: #92400e;
     }
 
+    .type-academic {
+      background: #dcfce7;
+      color: #166534;
+    }
+
     .sender-text {
       font-family: monospace;
-      font-size: 13px;
+      font-size: 13.5px;
       color: #334155;
+    }
+
+    .sender-note {
+      font-size: 12px;
+      color: var(--muted);
+      margin-left: 2px;
     }
 
     .remove-btn {
@@ -263,11 +355,82 @@
       font-size: 14px;
     }
 
+    /* Toggle switches */
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .setting-item:last-child {
+      border-bottom: none;
+    }
+
+    .setting-info {
+      flex: 1;
+      padding-right: 20px;
+    }
+
+    .setting-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .setting-desc {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #cbd5e1;
+      transition: .2s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
     .about-box {
       font-size: 13px;
       color: var(--muted);
       text-align: center;
-      padding-top: 10px;
+      padding-top: 15px;
     }
 
     .about-box a {
@@ -283,48 +446,164 @@
 <body>
   <div class="container">
     <header>
-      <div class="header-icon">🛡️</div>
-      <div>
-        <h1>Email Verifier</h1>
-        <div class="subtitle">Safe Senders & Common Domains Database</div>
+      <div class="header-left">
+        <div class="header-icon">🛡️</div>
+        <div>
+          <h1>Email Verifier</h1>
+          <div class="subtitle">Safe Senders, Academic Protection & Security Settings</div>
+        </div>
       </div>
     </header>
 
-    <!-- ADD NEW SAFE SENDER CARD -->
-    <div class="card">
-      <div class="card-title">Add Safe Sender or Domain</div>
-      <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">
-        Emails from these domains or specific addresses will be marked as trusted and bypass typo-squatting or phishing warnings.
-      </p>
-      <div class="input-row">
-        <input id="new-sender-input" type="text" placeholder="e.g. google.com or support@example.com">
-        <button id="add-sender-btn" class="btn-primary">➕ Add to Safe List</button>
-      </div>
-      <div id="add-feedback" class="feedback-msg"></div>
+    <!-- Navigation Tabs -->
+    <div class="tabs-nav">
+      <button class="tab-btn active" data-tab="tab-safe-senders">🛡️ Safe Senders</button>
+      <button class="tab-btn" data-tab="tab-academic">🎓 Academic Protection</button>
+      <button class="tab-btn" data-tab="tab-history">🕒 Sender History</button>
+      <button class="tab-btn" data-tab="tab-settings">⚙️ Settings & Backup</button>
     </div>
 
-    <!-- DATABASE LIST CARD -->
-    <div class="card">
-      <div class="card-title">
-        <span>Trusted Database</span>
-        <span id="entries-count" class="badge-count">0</span>
+    <!-- TAB 1: SAFE SENDERS -->
+    <div id="tab-safe-senders" class="tab-content active">
+      <div class="card">
+        <div class="card-title">Add Safe Sender or Domain</div>
+        <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">
+          Emails from these domains or addresses are marked as trusted in Gmail and bypass typo-squatting or phishing warnings.
+        </p>
+        <div class="input-row">
+          <input id="new-sender-input" class="input-flex" type="text" placeholder="e.g. google.com or support@example.com">
+          <input id="new-sender-note" style="flex:1; min-width:180px;" type="text" placeholder="Optional note (e.g. My Bank)">
+          <button id="add-sender-btn" class="btn-primary">➕ Add to Safe List</button>
+        </div>
+        <div id="add-feedback" class="feedback-msg"></div>
       </div>
 
-      <div class="search-bar">
-        <input id="search-input" type="text" placeholder="🔍 Search safe domains or emails...">
+      <div class="card">
+        <div class="card-title">
+          <span>Trusted Database</span>
+          <span id="entries-count" class="badge-count">0</span>
+        </div>
+
+        <div class="search-row">
+          <input id="search-input" style="flex:1;" type="text" placeholder="🔍 Search safe domains or emails...">
+        </div>
+
+        <div class="list-actions">
+          <div class="filter-group">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="domain">Domains</button>
+            <button class="filter-btn" data-filter="email">Emails</button>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button id="reset-defaults-btn" class="btn-outline btn-small" title="Restore default trusted domains">
+              ↺ Reset to Defaults
+            </button>
+            <button id="clear-all-btn" class="btn-danger-outline btn-small" title="Remove all entries">
+              🗑️ Clear All
+            </button>
+          </div>
+        </div>
+
+        <div id="senders-list" class="senders-list">
+          <!-- Dynamically rendered -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: ACADEMIC PROTECTION -->
+    <div id="tab-academic" class="tab-content">
+      <div class="card">
+        <div class="card-title">Academic Email Protection Mode</div>
+        <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">
+          Tailored security for researchers, students, and university applicants. Detects faculty impersonation from free email accounts, predatory journals, and fraudulent admissions fee solicitations.
+        </p>
+        <div class="setting-item">
+          <div class="setting-info">
+            <div class="setting-title">Enable Academic Protection Heuristics</div>
+            <div class="setting-desc">Alerts when messages claim professor or academic titles without using institutional domains.</div>
+          </div>
+          <label class="switch">
+            <input id="toggle-academic-protection" type="checkbox" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
       </div>
 
-      <div class="list-actions">
-        <button id="reset-defaults-btn" class="btn-outline btn-small" title="Restore default trusted domains">
-          ↺ Reset to Defaults
-        </button>
-        <button id="clear-all-btn" class="btn-danger-outline btn-small" title="Remove all entries">
-          🗑️ Clear All
-        </button>
+      <div class="card">
+        <div class="card-title">Trusted Universities & Official Domains</div>
+        <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">
+          Add official domains for your university, department, or research institutions (e.g. <code>harvard.edu</code>, <code>ox.ac.uk</code>, <code>buet.ac.bd</code>).
+        </p>
+        <div class="input-row">
+          <input id="new-inst-domain" class="input-flex" type="text" placeholder="e.g. mit.edu or oxford.ac.uk">
+          <input id="new-inst-name" style="flex:1; min-width:180px;" type="text" placeholder="Institution Name">
+          <button id="add-inst-btn" class="btn-primary">➕ Add Institution</button>
+        </div>
+        <div id="inst-feedback" class="feedback-msg"></div>
+
+        <div id="inst-list" class="senders-list" style="margin-top:12px;">
+          <!-- Dynamically rendered -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: SENDER HISTORY -->
+    <div id="tab-history" class="tab-content">
+      <div class="card">
+        <div class="card-title">
+          <span>Observed Sender History</span>
+          <button id="clear-history-btn" class="btn-danger-outline btn-small">🗑️ Clear History</button>
+        </div>
+        <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">
+          The extension locally tracks senders you interact with in Gmail to detect sudden domain drift or unexpected Reply-To changes. All history is strictly stored on your device.
+        </p>
+        <div id="history-list" class="senders-list">
+          <!-- Dynamically rendered -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: SETTINGS & BACKUP -->
+    <div id="tab-settings" class="tab-content">
+      <div class="card">
+        <div class="card-title">General Preferences</div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <div class="setting-title">Interface Language / ভাষা</div>
+            <div class="setting-desc">Choose between English and Bengali for labels, risk explanations, and recommendations.</div>
+          </div>
+          <select id="lang-select" style="min-width:140px;">
+            <option value="en">English</option>
+            <option value="bn">বাংলা (Bengali)</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <div class="setting-title">DNS-over-HTTPS Verification (Google DoH)</div>
+            <div class="setting-desc">Perform privacy-preserving MX, SPF, and DMARC DNS lookups using free public DNS. No personal data is sent.</div>
+          </div>
+          <label class="switch">
+            <input id="toggle-doh" type="checkbox" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
       </div>
 
-      <div id="senders-list" class="senders-list">
-        <!-- Dynamically rendered -->
+      <div class="card">
+        <div class="card-title">Backup & Restore Safe Senders</div>
+        <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">
+          Export your trusted senders and academic directories as a JSON file, or restore from a previously exported backup.
+        </p>
+        <div style="display:flex; gap:10px; margin-bottom:12px;">
+          <button id="export-btn" class="btn-outline">💾 Export Safe Senders (JSON)</button>
+          <label class="btn-outline" style="cursor:pointer; display:inline-flex; align-items:center;">
+            📂 Import Backup
+            <input id="import-file-input" type="file" accept=".json" style="display:none;">
+          </label>
+        </div>
+        <div id="backup-feedback" class="feedback-msg"></div>
       </div>
     </div>
 
@@ -338,6 +617,9 @@
     </div>
   </div>
 
+  <script src="utils/i18n.js"></script>
+  <script src="utils/domain-utils.js"></script>
+  <script src="utils/sender-history.js"></script>
   <script src="options.js"></script>
 </body>
 </html>

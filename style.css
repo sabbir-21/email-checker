@@ -2,7 +2,7 @@
     position: fixed;
     top: 90px;
     right: 50px;
-    width: 360px;
+    width: 380px;
     background: #ffffff;
     border: 2px solid #3f78e0;
     border-radius: 12px;
@@ -39,6 +39,28 @@
     gap: 8px;
 }
 
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.header-btn {
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 3px 7px;
+    border-radius: 4px;
+    transition: background 0.15s;
+}
+
+.header-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
 #close-popup {
     border: none;
     background: transparent;
@@ -58,6 +80,7 @@
     padding: 14px;
     max-height: 520px;
     overflow-y: auto;
+    user-select: text;
 }
 
 .context-tag {
@@ -91,6 +114,40 @@
     color: #475569;
 }
 
+/* Risk Banner */
+.risk-banner {
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+}
+
+.risk-banner-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.risk-title {
+    font-size: 13.5px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+}
+
+.risk-count-badge {
+    font-size: 11px;
+    background: rgba(0,0,0,0.08);
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.risk-banner-desc {
+    font-size: 12px;
+    line-height: 1.4;
+    color: #334155;
+}
+
 .info-section {
     font-size: 13.5px;
     line-height: 1.5;
@@ -105,7 +162,7 @@
 }
 
 .email-text {
-    max-width: 250px;
+    max-width: 260px;
     word-break: break-all;
     white-space: normal;
     font-family: monospace;
@@ -144,37 +201,160 @@
     color: #047857;
 }
 
-.warning-section {
-    background: #fff5f5;
-    border-left: 4px solid #ff4d4d;
-    padding: 8px 10px;
+/* Academic Badge */
+.academic-badge {
+    background: #eff6ff;
+    border: 1px solid #3b82f6;
+    border-left: 4px solid #3b82f6;
     border-radius: 6px;
-    font-size: 13px;
+    padding: 8px 10px;
     margin-bottom: 10px;
-    color: #991b1b;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    color: #1e3a8a;
+}
+
+.academic-badge-icon {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.academic-badge-title {
+    font-weight: 700;
+    font-size: 12.5px;
+}
+
+.academic-badge-sub {
+    font-size: 11px;
+    color: #1d4ed8;
+}
+
+.recommendation-section {
+    background: #f8fafc;
+    border-left: 3px solid #64748b;
+    padding: 8px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-bottom: 10px;
+    color: #334155;
     line-height: 1.4;
 }
 
-.safe-section {
-    background: #e9f9ee;
-    border-left: 4px solid #28a745;
-    padding: 8px 10px;
-    border-radius: 6px;
-    color: #166534;
-    font-size: 13px;
-    margin-bottom: 10px;
-    line-height: 1.4;
-}
-
-.mx-section {
-    background: #fffbeb;
-    border-left: 4px solid #f59e0b;
-    padding: 8px 10px;
-    margin-bottom: 10px;
+/* Evidence Accordion */
+.evidence-accordion-btn {
+    width: 100%;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    padding: 8px 12px;
     border-radius: 6px;
     font-size: 12.5px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    transition: background 0.15s;
+}
+
+.evidence-accordion-btn:hover {
+    background: #e2e8f0;
+}
+
+#evidence-panel {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 12px;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.evidence-item {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-left: 3px solid #94a3b8;
+    border-radius: 4px;
+    padding: 7px 9px;
+    margin-bottom: 6px;
+    font-size: 11.5px;
+    line-height: 1.35;
+}
+
+.evidence-item.high {
+    border-left-color: #dc3545;
+}
+
+.evidence-item.medium {
+    border-left-color: #f59e0b;
+}
+
+.severity-pill {
+    font-size: 9px;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    margin-right: 4px;
+}
+
+.severity-pill.high {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.severity-pill.medium {
+    background: #fef3c7;
     color: #92400e;
-    word-break: break-all;
+}
+
+.evidence-title {
+    font-size: 12px;
+    margin-bottom: 2px;
+    color: #0f172a;
+}
+
+.evidence-exp {
+    color: #475569;
+    margin-bottom: 2px;
+}
+
+.evidence-rec {
+    color: #0369a1;
+    font-size: 11px;
+}
+
+.empty-evidence {
+    padding: 10px;
+    font-size: 12px;
+    color: #166534;
+    text-align: center;
+}
+
+.auth-details-block, .dns-details-block {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 6px 8px;
+    margin-top: 6px;
+    font-size: 11.5px;
+    color: #334155;
+}
+
+.auth-line, .dns-line {
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.auth-note {
+    display: block;
+    font-size: 10px;
+    color: #94a3b8;
+    margin-top: 3px;
+    font-style: italic;
 }
 
 .safe-toggle-btn {
@@ -210,6 +390,48 @@
 
 .safe-toggle-btn.remove:hover {
     background: #ffe4e6;
+}
+
+/* Action Buttons Row */
+.action-buttons-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.action-btn-secondary {
+    flex: 1;
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background 0.15s;
+}
+
+.action-btn-secondary:hover {
+    background: #e2e8f0;
+}
+
+.copy-status-msg {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+    padding: 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 8px;
+    animation: fadeIn 0.2s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .action-btn {
@@ -260,6 +482,37 @@
     margin-top: 8px;
     font-size: 12.5px;
     line-height: 1.4;
+}
+
+.mismatch-success {
+    color: #166534;
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
+    padding: 6px 8px;
+    border-radius: 4px;
+    margin-top: 6px;
+    font-size: 12px;
+}
+
+.mismatch-error {
+    color: #991b1b;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    padding: 6px 8px;
+    border-radius: 4px;
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.mismatch-warn {
+    color: #92400e;
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    padding: 6px 8px;
+    border-radius: 4px;
+    margin-top: 6px;
+    font-size: 12px;
 }
 
 .hidden {

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Email Verifier",
-  "version": "1.1",
-  "description": "Detects phishing, typo-squatting, and checks sender authenticity.",
+  "version": "1.2",
+  "description": "Detects phishing, typo-squatting, lookalike domains, and checks sender authenticity and academic email security.",
   "author": "Sabbir Ahmed",
   "homepage_url": "https://github.com/sabbir-21",
   "permissions": [
@@ -23,7 +23,18 @@
   "content_scripts": [
     {
       "matches": ["https://mail.google.com/*"],
-      "js": ["content.js"],
+      "js": [
+        "utils/i18n.js",
+        "utils/domain-utils.js",
+        "utils/url-analyzer.js",
+        "utils/attachment-analyzer.js",
+        "utils/phishing-detector.js",
+        "utils/academic-protection.js",
+        "utils/dns-verifier.js",
+        "utils/sender-history.js",
+        "utils/risk-engine.js",
+        "content.js"
+      ],
       "css": ["style.css"],
       "all_frames": true,
       "run_at": "document_idle"

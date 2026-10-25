@@ -1,6 +1,8 @@
 # Email Verifier Extension
 
-A privacy-focused, 100% free browser Extension (Manifest V3) that inspects sender authenticity, detects lookalike and typosquatting domains, evaluates authentication and header alignment, analyzes suspicious URLs and attachments, provides academic protection mode, and generates explainable risk assessments directly inside Gmail.
+A privacy-focused, 100% free browser extension (Manifest V3) that inspects sender authenticity, detects lookalike and typosquatting domains and phishing patterns, evaluates authentication and header alignment, validates MX records, analyzes suspicious URLs and attachment risks, provides academic protection mode, and generates explainable risk assessments directly inside Gmail.
+
+Install from [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/email-verifier/oeafohigknnpndclaoinldhkheikglkc)
 
 ---
 
